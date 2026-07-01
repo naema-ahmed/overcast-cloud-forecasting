@@ -64,6 +64,7 @@ def analyze_spend_diagnostics(spend):
             "has_seasonality": False,
             "recent_level_off": False,
             "coefficient_of_variation": None,
+            "relative_volatility_std": None,
             "relative_slope": None,
             "seasonal_strength": None
         }
@@ -85,14 +86,26 @@ def analyze_spend_diagnostics(spend):
     else:
         relative_slope = 0
 
+    monthly_changes = spend.diff().dropna()
+
+    if len(monthly_changes) >= 2:
+
+        relative_volatility_std = (
+            monthly_changes.std() / mean_spend
+            if mean_spend != 0
+            else 0
+        )
+    else:
+        relative_volatility_std = 0
+
+    has_trend = abs(relative_slope) >= 0.015
+    is_volatile = relative_volatility_std > 1.0
+
     is_stable = (
         coefficient_of_variation < 0.08
         and abs(relative_slope) < 0.015
+        and not is_volatile
     )
-
-    is_volatile = coefficient_of_variation > 0.20
-
-    has_trend = abs(relative_slope) >= 0.015
 
     seasonal_strength = None
     has_seasonality = False
@@ -121,17 +134,8 @@ def analyze_spend_diagnostics(spend):
         first_half = spend.iloc[: n // 2]
         second_half = spend.iloc[n // 2 :]
 
-        first_slope = np.polyfit(
-            np.arange(len(first_half)),
-            first_half,
-            1
-        )[0]
-
-        second_slope = np.polyfit(
-            np.arange(len(second_half)),
-            second_half,
-            1
-        )[0]
+        first_slope = np.polyfit(np.arange(len(first_half)), first_half, 1)[0]
+        second_slope = np.polyfit(np.arange(len(second_half)), second_half, 1)[0]
 
         first_relative_slope = (
             first_slope / first_half.mean()
@@ -158,6 +162,7 @@ def analyze_spend_diagnostics(spend):
         "has_seasonality": has_seasonality,
         "recent_level_off": recent_level_off,
         "coefficient_of_variation": coefficient_of_variation,
+        "relative_volatility_std": relative_volatility_std,
         "relative_slope": relative_slope,
         "seasonal_strength": seasonal_strength
     }
@@ -196,19 +201,20 @@ def suggest_method(spend, has_project_estimations=False, expected_monthly_spend=
             "diagnostics": diagnostics
         }
 
-    if diagnostics["has_seasonality"] and n >= 24:
-        return {
-            "suggested_method": "holtwinters_triple_exponential_smoothing_forecast",
-            "reason": "At least 24 months of data are available and a seasonality signal was detected.",
-            "diagnostics": diagnostics
-        }
-
     if diagnostics["recent_level_off"]:
         return {
             "suggested_method": "single_exponential_smoothing_forecast",
             "reason": "Spend appears to have grown earlier but recently stabilized, so SES is preferred.",
             "diagnostics": diagnostics
         }
+    
+    #if diagnostics["has_seasonality"] and n >= 24:
+    #    return {
+    #        "suggested_method": "holtwinters_triple_exponential_smoothing_forecast",
+    #        "reason": "At least 24 months of data are available and a seasonality signal was detected.",
+    #        "diagnostics": diagnostics
+    #    }
+
 
     if diagnostics["has_trend"] and not diagnostics["is_volatile"]:
         return {
