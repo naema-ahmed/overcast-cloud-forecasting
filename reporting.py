@@ -99,7 +99,7 @@ def analyze_spend_diagnostics(spend):
         relative_volatility_std = 0
 
     has_trend = abs(relative_slope) >= 0.015
-    is_volatile = relative_volatility_std > 1.0
+    is_volatile = relative_volatility_std > 0.25
 
     is_stable = (
         coefficient_of_variation < 0.08

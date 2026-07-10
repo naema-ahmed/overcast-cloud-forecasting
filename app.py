@@ -226,10 +226,10 @@ if spend_file and commitment_file:
         st.dataframe(comparison_df)
 
         spend_series = period_spend["spend"]
-        has_seasonality = st.checkbox(
-            "Use seasonal forecasting if data appears seasonal",
-            value=False
-            )
+        has_seasonality = st.checkbox("Use seasonal forecasting if data appears seasonal", 
+                                      value=False,
+                                      help="Allows Holt-Winters forecasting when at least 24 months of data are available. Use if a seasonal pattern is expected."
+                                      )
         
         suggestion = suggest_method(spend_series, has_seasonality=has_seasonality)
 

@@ -91,7 +91,7 @@ def holt_double_exponential_smoothing_forecast(spend, months_remaining): # Assum
 
 
 def holtwinters_triple_exponential_smoothing_forecast(spend, months_remaining, seasonal_periods=12): # Assumes both trend and seasonality present
-    if len(spend) < 2 * seasonal_periods: # Must have at least 2 years to check for seasonality across them
+    if len(spend) < 2*seasonal_periods: # Must have at least 2 years to check for seasonality across them
         return None
 
     model = ExponentialSmoothing(spend, trend="add", seasonal="add", seasonal_periods=seasonal_periods)
@@ -125,7 +125,6 @@ def manual_scenario_mode(expected_monthly_spend, months_remaining):
     }
 
 def project_expectation_forecast(base_forecast_result, project_adjustments):
-    # project_adjustments should be a list with one entry per future month, like this: [0, 0, 10000, 10000, 5000]
     
     monthly_forecasts = base_forecast_result["monthly_forecasts"].copy()
     for i in range(min(len(monthly_forecasts), len(project_adjustments))):
