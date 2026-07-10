@@ -1,2 +1,4 @@
 cloud,period_start,period_end,commitment
-AWS,2024-01,2026-06,550000
+AWS,2024-01,2026-06,600000
+Azure,2024-06,2027-06,400000
+GCP,2025-01,2028-01,250000
