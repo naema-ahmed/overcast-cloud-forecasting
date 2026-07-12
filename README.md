@@ -169,12 +169,11 @@ AWS,2025-01,2025-12,180000
 
 ---
 
-## Assumptions
+## Assumptions & Disclaimers
 
-- Each cloud provider has a single commitment period.
+- Each cloud provider has a single commitment period. If more are provided in the commitment csv, only the first commitment is considered for each cloud.
 - Historical spend values represent monthly totals.
-- Spend and commitment values use the same currency.
-- The tool performs no currency conversion.
+- Spend and commitment values use the same currency (the tool performs no currency conversion).
 - Holt-Winters forecasting requires at least 24 months of historical data.
 
 ---
