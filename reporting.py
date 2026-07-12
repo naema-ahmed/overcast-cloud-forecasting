@@ -9,7 +9,6 @@ from forecasting import (
     single_exponential_smoothing_forecast,
     holt_double_exponential_smoothing_forecast,
     holtwinters_triple_exponential_smoothing_forecast,
-    manual_scenario_mode,
     project_expectation_forecast
 )
 
@@ -20,11 +19,11 @@ def forecast_gap(actual_cost_to_date, future_spend_total, commitment):
     gap = commitment - forecasted_total_spend
 
     if gap>0:
-        status = "Forecast falls short"
+        status = "Forecast falls short of commitment by ${:,.2f}.".format(gap)
     elif gap==0:
-        status = "Forecast meets commitment"
+        status = "Forecast meets commitment."
     else:
-        status= "Forecast exceeds commitment"
+        status= "Forecast exceeds commitment by ${:,.2f}.".format(abs(gap))
     return {
     "actual_cost_to_date": actual_cost_to_date, "future_spend_total":future_spend_total,
     "forecasted_total_spend":forecasted_total_spend, "commitment":commitment, "gap":gap, "status":status }
@@ -168,7 +167,7 @@ def analyze_spend_diagnostics(spend):
     }
 
 
-def suggest_method(spend, has_project_estimations=False, expected_monthly_spend=None, has_seasonality=False):
+def suggest_method(spend, has_project_estimations=False, has_seasonality=False):
     diagnostics = analyze_spend_diagnostics(spend)
 
     n = diagnostics["n"]
@@ -177,13 +176,6 @@ def suggest_method(spend, has_project_estimations=False, expected_monthly_spend=
         return {
             "suggested_method": "project_expectation_forecast",
             "reason": "Project/business estimates were provided, so the forecast should incorporate known future changes.",
-            "diagnostics": diagnostics
-        }
-
-    if n == 0 and expected_monthly_spend is not None:
-        return {
-            "suggested_method": "manual_scenario_mode",
-            "reason": "No historical spend data is available, but an expected monthly spend was provided.",
             "diagnostics": diagnostics
         }
 
@@ -244,7 +236,7 @@ def suggest_method(spend, has_project_estimations=False, expected_monthly_spend=
     }
 
 
-def generate_cloud_report(spend_data, commitments, cloud, project_adjustments=None, expected_monthly_spend=None,  selected_method=None,):
+def generate_cloud_report(spend_data, commitments, cloud, project_adjustments=None,  selected_method=None,):
     
     project_adjustments = project_adjustments or []
 
@@ -282,8 +274,7 @@ def generate_cloud_report(spend_data, commitments, cloud, project_adjustments=No
     
     suggestion = suggest_method(
         spend,
-        has_project_estimations=len(project_adjustments) > 0,
-        expected_monthly_spend=expected_monthly_spend
+        has_project_estimations=len(project_adjustments) > 0
     )
 
     if selected_method is None:
@@ -300,9 +291,6 @@ def generate_cloud_report(spend_data, commitments, cloud, project_adjustments=No
 
     elif method == "run_rate_forecast":
         forecast_result = run_rate_forecast(spend, months_remaining)
-
-    elif method == "manual_scenario_mode":
-        forecast_result = manual_scenario_mode(expected_monthly_spend, months_remaining)
 
     elif method == "project_expectation_forecast":
         base_forecast_result = run_rate_forecast(spend, months_remaining)
@@ -321,7 +309,7 @@ def generate_cloud_report(spend_data, commitments, cloud, project_adjustments=No
         return {
             "cloud": cloud,
             "status": "Insufficient data",
-            "message": "No historical spend, project adjustment, or manual assumption available.",
+            "message": "No historical spend or project adjustment available. Please provide either historical spend data or project/business estimates to generate a forecast.",
             "suggestion": suggestion
         }
 

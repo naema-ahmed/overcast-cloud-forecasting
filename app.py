@@ -10,6 +10,12 @@ from reporting import (
     suggest_method
 )
 
+st.set_page_config(
+    page_title="Overcast",
+    page_icon="☁️",
+    layout="wide"
+)
+
 def make_json_safe(obj):
     if isinstance(obj, dict):
         return {key: make_json_safe(value) for key, value in obj.items()}
@@ -156,7 +162,8 @@ def display_report(report):
     with st.expander("View raw report data"):
         st.json(report)
 
-st.title("Cloud Cost Commitment Forecasting Tool")
+st.title("Overcast")
+st.caption("A cloud cost forecasting tool.")
 
 st.subheader("Load Saved Report")
 
@@ -206,7 +213,6 @@ if spend_file and commitment_file:
 
     has_historical_data = len(period_spend) > 0
 
-    expected_monthly_spend = None
     selected_method = None
     project_adjustments = []
 
@@ -292,29 +298,9 @@ if spend_file and commitment_file:
 
     else:
         st.warning(
-            "No historical spend data was found for this cloud and commitment period. Manual Scenario Mode: Enter expected future monthly spend to estimate whether the commitment will be met."
+            "No historical spend data was found for this cloud and commitment period. At least one month of historical spend data is required to generate a forecast."
         )
 
-        forecast_months = pd.date_range(
-            start=period_start,
-            end=period_end,
-            freq="MS"
-        )
-
-        expected_spend_df = pd.DataFrame({
-            "month": forecast_months.strftime("%Y-%m"),
-            "expected_spend": [0.0] * len(forecast_months)
-        })
-
-        edited_expected_spend_df = st.data_editor(
-            expected_spend_df,
-            use_container_width=True,
-            disabled=["month"]
-        )
-
-        expected_monthly_spend = edited_expected_spend_df["expected_spend"].tolist()
-
-        selected_method = "manual_scenario_mode"
 
     st.subheader("3. Final Report")
 
@@ -324,7 +310,6 @@ if spend_file and commitment_file:
             commitments=commitments_data,
             cloud=selected_cloud,
             selected_method=selected_method,
-            expected_monthly_spend=expected_monthly_spend,
             project_adjustments=project_adjustments
         )
 
@@ -349,6 +334,6 @@ if spend_file and commitment_file:
             st.download_button(
                 label="Download Report",
                 data=report_json,
-                file_name=f"{selected_cloud}_forecast_report.json",
-git rebase --continue                mime="application/json"
+                file_name=f"Overcast_{selected_cloud}_report.json",
+                mime="application/json"
             )
