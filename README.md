@@ -59,5 +59,6 @@ This tool uses historical monthly cloud cost and commitmemnt data across multipl
 * `app.py` 
 * `validation.py` 
 * `forecasting.py` 
-* `reporting.py` 
-* README
+* `reporting.py`
+* `test files` — Synthetic datasets of various spend patterns used in testing this app.
+* `README.md`
