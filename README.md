@@ -1,6 +1,6 @@
 # Overcast
 
-Cloud Cost Commitment Forecasting Tool
+Cloud Cost Forecasting & Commitment Analysis
 
 ## Overview
 
