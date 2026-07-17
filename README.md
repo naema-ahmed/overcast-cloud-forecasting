@@ -4,7 +4,7 @@ Cloud Cost Forecasting & Commitment Analysis
 
 ## Overview
 
-This application forecasts future public cloud spend using historical monthly cloud spend data and compares the forecast against contracted cloud commitments. It supports multiple cloud providers and recommends an appropriate statistical forecasting method based on characteristics of the historical spend data.
+**Overcast** is a web-application hosted on Streamlit that forecasts future public cloud spend using historical monthly cloud spend data and compares the forecast against contracted cloud commitments. It supports multiple cloud providers and recommends an appropriate statistical forecasting method based on characteristics of the historical spend data.
 
 For each cloud provider, the tool:
 
