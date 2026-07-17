@@ -17,75 +17,71 @@ For each cloud provider, the tool:
 
 ---
 
-## Features
+## App Workflow
 
-- Upload historical cloud spend data.
+- Optionally load a previously generated report for viewing.
+- Upload historical monthly cloud spend data.
 - Upload cloud commitment data.
-- Support for multiple cloud providers.
-- Automatic forecasting method recommendation.
-- Manual forecasting method selection.
-- Statistical forecasting methods:
-  - Run Rate
-  - Moving Average
-  - Historic Growth
-  - Single Exponential Smoothing (SES)
-  - Holt Double Exponential Smoothing
-  - Holt-Winters Triple Exponential Smoothing
-- Optional planned project adjustments.
-- Commitment gap analysis.
-- Required monthly growth rate calculation.
-- Monthly spend forecast visualisation.
-- Cumulative spend versus commitment visualisation.
-- Save and load forecast reports.
+- Optionally select a cloud for report generation. App automatically selects the cloud appearing first in commitment data.
+- Displays comparision of all available forecasting methods. 
+- Suggests a forecasting method along with the reason for its choice and all spend data diagnostics, which are detailed in _Method Recommendation Criteria_ below.
+- Optionally override the suggestion and select a forecasting method.
+- Optionally add monthly planned project adjustments.
+- Generate report to display:
+    - Commitment gap analysis
+    - Required monthly growth rate
+    - Monthly spend forecast visualisation
+    - Cumulative spend versus commitment visualisation
+    - Save and load forecast reports
 
 ---
 
-## Forecasting Methodology
+## Forecasting Methods & Recommendation 
 
-Before generating a forecast, the application analyses the historical spend data and recommends an appropriate forecasting method.
+Before generating a forecast, the application analyses the historical spend data and recommends an appropriate forecasting method. The recommendation is based on the following diagnostics:
 
-The recommendation is based on several diagnostics including:
+  - Number of historical observations
+  - Trend detection
+  - Spend stability
+  - Month-to-month volatility
+  - Recent growth level-off
+  - Optional user indication of seasonality
 
-- Number of historical observations
-- Trend detection
-- Spend stability
-- Month-to-month volatility
-- Recent growth level-off
-- Optional user indication of seasonality
+There are 6 forecasting methods in total; four can be recommended automatically based on the aforementioned diagnostics, and two are optional methods involving user selection.
 
-### Run Rate
+### 1. Run Rate
 
 **Suggested when:** fewer than three months of historical data are available.
 
 Uses the average historical monthly spend as the future monthly forecast when insufficient data exists to identify meaningful patterns.
 
-### Moving Average
+### 2. Moving Average
 
 **Suggested when:** spend is volatile or no clear data pattern is detected.
 
-Smooths short-term fluctuations by averaging recent observations.
+Smooths short-term fluctuations by averaging the 3-month moving window of recent observations.
 
-### Historic Growth
+### 3. Historic Growth Rate
 
-Available as an optional forecasting method.
+_Available as an optional forecasting method._
 
 Forecasts future spend using the compound monthly growth rate observed between the first and last historical observations.
 
-### Single Exponential Smoothing (SES)
+### 4. Single Exponential Smoothing (SES)
 
 **Suggested when:** spend is stable or historical growth has recently levelled off.
 
 Models a stable underlying spending level while smoothing random fluctuations.
 
-### Holt Double Exponential Smoothing
+### 5. Holt Double Exponential Smoothing
 
 **Suggested when:** a clear trend exists without excessive volatility.
 
 Models both the current spending level and a persistent trend.
 
-### Holt-Winters Triple Exponential Smoothing
+### 6. Holt-Winters Triple Exponential Smoothing
 
-**Available when:** seasonal forecasting is enabled and at least 24 months of historical data are available.
+_Available as an optional forecasing method when seasonal forecasting is enabled by the user and at least 24 months of historical data are available._
 
 Models level, trend and repeating seasonal patterns.
 
