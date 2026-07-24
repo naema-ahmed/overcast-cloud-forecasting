@@ -13,7 +13,7 @@ For each cloud provider, the tool:
 - Determines whether the contracted commitment is expected to be met.
 - Calculates the forecast gap.
 - Calculates the monthly growth rate required to meet the commitment if the forecast falls short.
-- Generates visualisations and a downloadable JSON report.
+- Generates visualisations and a downloadable JSON, PDF, and PPT reports.
 
 ---
 
@@ -119,7 +119,7 @@ For each cloud provider, the generated report includes:
 - Historical and forecast spend plot
 - Cumulative spend versus commitment plot
 
-Reports can be downloaded and reloaded as JSON files.
+Reports can be downloaded as JSON, PDF, and PPT. Downloading as a JSON file allows user to reload it to Overcast for viewing purposes.
 
 ---
 
